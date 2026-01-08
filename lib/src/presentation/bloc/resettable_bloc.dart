@@ -1,0 +1,3 @@
+mixin ResettableBloc {
+  void addResetEvent();
+}
