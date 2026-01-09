@@ -73,12 +73,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   _signup(DoSignUpEvent event, Emitter<LoginState> emit) async {
     emit(state.copyWith(isLoading: true));
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     await Future.delayed(Duration(seconds: 2));
     var random = Random();
     prefs.setInt("userid", random.nextInt(600));
     prefs.setString("userName", event.username);
     prefs.setInt("pin", event.pin);
     emit(state.copyWith(isLoading: false, loginStatus: LoginStatus.loggedIn));
+    ToastService().success("Signup successfully");
   }
 
   _toggleSignup(ToggleSignupEvent event, Emitter<LoginState> emit) async {

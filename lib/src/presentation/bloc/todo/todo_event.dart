@@ -23,11 +23,19 @@ class AddTodo extends TodoEvent {
 }
 
 class UpdateTodo extends TodoEvent {
-  final TodoData todo;
-  UpdateTodo(this.todo);
+  final String task;
+  final int id;
+  final TodoCategories category;
+  final TodoCompletion? status;
+  UpdateTodo({
+    required this.task,
+    required this.category,
+    required this.id,
+    this.status,
+  });
 
   @override
-  List<Object?> get props => [todo];
+  List<Object?> get props => [task, category, id, status];
 }
 
 class DeleteTodo extends TodoEvent {
@@ -44,4 +52,11 @@ class OnDataChanged extends TodoEvent {
 
   @override
   List<Object?> get props => [todos];
+}
+
+class CheckCategories extends TodoEvent {
+  final TodoCategories cate;
+  CheckCategories(this.cate);
+  @override
+  List<Object?> get props => [cate];
 }
