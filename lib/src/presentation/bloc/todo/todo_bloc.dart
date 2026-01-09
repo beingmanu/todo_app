@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_withbloc/src/domain/model/todo_model.dart';
+import 'package:todo_withbloc/src/utils/toast_util.dart';
 
 import '../../../service/floor.dart';
 import 'todo_event.dart';
@@ -29,7 +30,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       final newTodo = TodoData(
         id: Random().nextInt(99999),
         text: event.task,
-        category: event.category,
+        category: state.category!,
         status: TodoCompletion.incomplete,
         time: DateTime.now().toIso8601String(),
       );
@@ -38,12 +39,27 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
     // 3. Update Todo (Used for editing text OR toggling done)
     on<UpdateTodo>((event, emit) async {
-      await dao.updateTodo(event.todo);
+      try {
+        final newTodo = TodoData(
+          id: event.id,
+          text: event.task,
+          category: state.category!,
+          status: event.status ?? TodoCompletion.incomplete,
+          time: DateTime.now().toIso8601String(),
+        );
+        await dao.updateTodo(newTodo);
+      } catch (e) {
+        ToastService().error(e.toString());
+      }
     });
 
     // 4. Delete Todo
     on<DeleteTodo>((event, emit) async {
       await dao.deleteTodo(event.todo);
+    });
+
+    on<CheckCategories>((event, emit) {
+      emit(state.copyWith(category: event.cate));
     });
   }
 

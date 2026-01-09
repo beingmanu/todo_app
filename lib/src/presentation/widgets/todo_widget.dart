@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_withbloc/src/presentation/bloc/todo/todo_state.dart';
 import '../../domain/model/todo_model.dart';
 import '../bloc/todo/todo_bloc.dart';
 import '../bloc/todo/todo_event.dart';
@@ -110,11 +111,6 @@ class TodoWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           _ActionButton(
-                            icon: Icons.edit_outlined,
-                            color: Colors.blueGrey,
-                            onTap: () => _showEditDialog(context),
-                          ),
-                          _ActionButton(
                             icon: Icons.delete_outline,
                             color: Colors.redAccent,
                             onTap: () =>
@@ -122,31 +118,44 @@ class TodoWidget extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           // Done/Undone Button
-                          ElevatedButton.icon(
-                            onPressed: () =>
-                                context.read<TodoBloc>().add(UpdateTodo(todo)),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
+                          BlocConsumer<TodoBloc, TodoState>(
+                            listener: (context, state) {},
+                            builder: (context, state) {
+                              return ElevatedButton.icon(
+                                onPressed: () => context.read<TodoBloc>().add(
+                                  UpdateTodo(
+                                    category: todo.category,
+                                    id: todo.id,
+                                    task: todo.text,
+                                    status: todo.status == TodoCompletion.done
+                                        ? TodoCompletion.incomplete
+                                        : TodoCompletion.done,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      todo.status == TodoCompletion.done
+                                      ? Colors.grey
+                                      : Colors.green,
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                icon: Icon(
                                   todo.status == TodoCompletion.done
-                                  ? Colors.grey
-                                  : Colors.green,
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            icon: Icon(
-                              todo.status == TodoCompletion.done
-                                  ? Icons.undo
-                                  : Icons.check,
-                              size: 18,
-                            ),
-                            label: Text(
-                              todo.status == TodoCompletion.done
-                                  ? "Undone"
-                                  : "Done",
-                            ),
+                                      ? Icons.undo
+                                      : Icons.check,
+                                  size: 18,
+                                ),
+                                label: Text(
+                                  todo.status == TodoCompletion.done
+                                      ? "Undone"
+                                      : "Done",
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
