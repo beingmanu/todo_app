@@ -8,7 +8,7 @@ class LoginEvent extends Equatable {
 
 class DoLoginEvent extends LoginEvent {
   final String username;
-  final int pin;
+  final String pin;
   const DoLoginEvent({required this.pin, required this.username});
   @override
   List<Object?> get props => [username, pin];
@@ -16,7 +16,7 @@ class DoLoginEvent extends LoginEvent {
 
 class DoSignUpEvent extends LoginEvent {
   final String username;
-  final int pin;
+  final String pin;
   const DoSignUpEvent({required this.pin, required this.username});
   @override
   List<Object?> get props => [username, pin];

@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 
+class BasicColors {
+  static Color k900 = const Color(0xFF031956);
+  static Color k800 = const Color(0xFF344fa1);
+  static Color k600 = const Color(0xFF98b5ff);
+  static Color k100 = const Color(0xFFfcfbfd);
+
+  static Color p100 = const Color(0xFFdb11ee);
+}
+
 class PrimaryColors {
   static Color k50 = const Color(0xFFFAFAFF);
   static Color k100 = const Color(0xFFF7F6FF);
@@ -74,14 +83,14 @@ class BlackAndWhiteColors {
 class GradientColors {
   static Map<String, Color> kPurple = {
     'primary': const Color(0xFF9980D3),
-    'secondary': const Color(0xFF5151B5)
+    'secondary': const Color(0xFF5151B5),
   };
   static Map<String, Color> kPink = {
     'primary': const Color(0xFFCF5555),
-    'secondary': const Color(0xFF8F3636)
+    'secondary': const Color(0xFF8F3636),
   };
   static Map<String, Color> kMixed = {
     'primary': const Color(0xFF9980D3),
-    'secondary': const Color(0xFFCF5555)
+    'secondary': const Color(0xFFCF5555),
   };
 }

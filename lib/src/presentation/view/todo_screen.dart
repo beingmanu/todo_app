@@ -3,12 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo_withbloc/src/config/router/routes.dart';
+import 'package:todo_withbloc/src/config/theme/app_themes.dart';
 import 'package:todo_withbloc/src/domain/model/todo_model.dart';
 import 'package:todo_withbloc/src/presentation/bloc/todo/todo_bloc.dart';
 import 'package:todo_withbloc/src/presentation/bloc/todo/todo_event.dart';
 import 'package:todo_withbloc/src/presentation/bloc/todo/todo_state.dart';
+import 'package:todo_withbloc/src/presentation/widgets/add_todo_widget.dart';
+import 'package:todo_withbloc/src/presentation/widgets/filter_chips.dart';
 
 import '../../utils/constants/colors.dart';
+import '../../utils/toast_util.dart';
 
 class ToDoScreen extends HookWidget {
   final String? existingTodo;
@@ -19,25 +23,28 @@ class ToDoScreen extends HookWidget {
     final size = MediaQuery.of(context).size;
 
     final TextEditingController taskController = useTextEditingController();
-    TodoData? todo;
 
     useEffect(() {
+      TodoData? todo;
+
       final currentState = context.read<TodoBloc>().state;
 
-      if (existingTodo != null && existingTodo != "A") {
+      if (existingTodo != null && existingTodo != "New") {
         try {
           final index = int.parse(existingTodo!);
 
           if (index >= 0 && index < currentState.todos.length) {
             todo = currentState.todos[index];
 
-            taskController.text = todo!.text;
+            taskController.text = todo.text;
 
-            context.read<TodoBloc>().add(CheckCategories(todo!.category));
+            context.read<TodoBloc>().add(CheckCategories(todo.category));
           }
         } catch (e) {
           debugPrint("Error parsing index: $e");
         }
+      } else {
+        context.read<TodoBloc>().add(CheckCategories(TodoCategories.personal));
       }
 
       return null;
@@ -48,36 +55,44 @@ class ToDoScreen extends HookWidget {
       onPopInvokedWithResult: (didPop, result) => context.go(AppRoutes.home),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("ToDo"),
-          backgroundColor: Colors.transparent,
+          title: Text(
+            "New Tasks",
+            style: AppTheme.darkTheme.textTheme.displayLarge,
+          ),
         ),
-        backgroundColor: PrimaryColors.k100,
+
         bottomNavigationBar: BlocConsumer<TodoBloc, TodoState>(
           listener: (context, state) {},
           builder: (context, state) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: PrimaryColors.k600,
                   fixedSize: Size(size.width * .8, 40),
                 ),
                 onPressed: () {
-                  if (existingTodo != null && existingTodo != "0") {
+                  if (taskController.text == "") {
+                    ToastService().error("Please write something!");
+                  } else if (existingTodo == "New") {
                     context.read<TodoBloc>().add(
                       AddTodo(
                         task: taskController.text,
                         category: state.category!,
                       ),
                     );
+                    context.go(AppRoutes.home);
                   } else {
                     context.read<TodoBloc>().add(
                       UpdateTodo(
                         category: state.category!,
                         id: state.todos[int.parse(existingTodo ?? "0")].id,
                         task: taskController.text,
+                        status:
+                            state.todos[int.parse(existingTodo ?? "0")].status,
                       ),
                     );
+                    context.go(AppRoutes.home);
                   }
                 },
                 child: state.isLoading
@@ -88,75 +103,37 @@ class ToDoScreen extends HookWidget {
           },
         ),
         body: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Card(
-                  surfaceTintColor: Colors.transparent,
-                  color: PrimaryColors.k400,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      controller: taskController,
-                      maxLines: null,
-                      // 2. Sets the keyboard to a type that supports multi-line
-                      keyboardType: TextInputType.multiline,
-                      // 3. Changes the "Done" button to a "Return/New Line" icon
-                      textInputAction: TextInputAction.newline,
-                      decoration: InputDecoration(border: InputBorder.none),
-                    ),
-                  ),
-                ),
+                SizedBox(height: 20),
+
+                AddTodoWidget(taskController: taskController),
                 SizedBox(height: 40),
-                Wrap(
-                  children: [
-                    CategoryWidget(category: TodoCategories.personal),
-                    CategoryWidget(category: TodoCategories.shopping),
-                    CategoryWidget(category: TodoCategories.work),
-                  ],
+
+                BlocConsumer<TodoBloc, TodoState>(
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    return Wrap(
+                      spacing: 8,
+                      children: TodoCategories.values.map((cat) {
+                        return FilterChipsWidget(
+                          isSelected: cat == state.category,
+                          value: cat.value,
+                          onSelected: (isse) => context.read<TodoBloc>().add(
+                            CheckCategories(cat),
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  },
                 ),
               ],
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-class CategoryWidget extends HookWidget {
-  final TodoCategories category;
-  const CategoryWidget({super.key, required this.category});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<TodoBloc, TodoState>(
-      builder: (context, state) {
-        return GestureDetector(
-          onTap: () {
-            context.read<TodoBloc>().add(CheckCategories(category));
-          },
-          child: Card(
-            surfaceTintColor: Colors.transparent,
-            color: state.category == category
-                ? PrimaryColors.k600
-                : PrimaryColors.k200,
-
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text(
-                category.value,
-                style: TextStyle(
-                  color: state.category == category
-                      ? PrimaryColors.k50
-                      : Colors.black,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

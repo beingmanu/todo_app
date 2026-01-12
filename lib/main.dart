@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toastification/toastification.dart';
 import 'package:todo_withbloc/src/config/router/app_router.dart';
+import 'package:todo_withbloc/src/config/theme/app_themes.dart';
 import 'package:todo_withbloc/src/presentation/bloc/login/login_bloc.dart';
 import 'package:todo_withbloc/src/presentation/bloc/todo/todo_bloc.dart';
 import 'package:todo_withbloc/src/presentation/bloc/todo/todo_event.dart';
@@ -35,6 +36,8 @@ class MainApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           routerConfig: router,
           themeMode: ThemeMode.light,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
         ),
       ),
     );
