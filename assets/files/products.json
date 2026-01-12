@@ -1,0 +1,44 @@
+[
+    {
+        "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop",
+        "title": "Apple Watch Series 9",
+        "price": "$399.00",
+        "subTitle": "Pure white sport band with an Always-On Retina display."
+    },
+    {
+        "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1170&auto=format&fit=crop",
+        "title": "Marshall Major IV",
+        "price": "$149.99",
+        "subTitle": "Iconic on-ear headphones with 80+ hours of wireless playtime."
+    },
+    {
+        "image": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=687&auto=format&fit=crop",
+        "title": "Hydro Flask 32oz",
+        "price": "$44.95",
+        "subTitle": "Insulated stainless steel water bottle in sage green."
+    },
+    {
+        "image": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?q=80&w=1170&auto=format&fit=crop",
+        "title": "Polaroid Now+ i-Type",
+        "price": "$129.99",
+        "subTitle": "Instant film camera with app-connected creative control."
+    },
+    {
+        "image": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=764&auto=format&fit=crop",
+        "title": "Samsung Galaxy Watch 6",
+        "price": "$299.00",
+        "subTitle": "Sleek black finish with advanced sleep coaching features."
+    },
+    {
+        "image": "https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=687&auto=format&fit=crop",
+        "title": "Drunk Elephant Lala Retro",
+        "price": "$62.00",
+        "subTitle": "Whipped moisturizing cream with six African oil blends."
+    },
+    {
+        "image": "https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=764&auto=format&fit=crop",
+        "title": "Nike Air Force 1 '07",
+        "price": "$115.00",
+        "subTitle": "Classic basketball silhouette in premium black leather."
+    }
+]
