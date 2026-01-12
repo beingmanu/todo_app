@@ -39,11 +39,8 @@ class HomeScreen extends HookWidget {
           BlocBuilder<LoginBloc, LoginState>(
             builder: (context, state) {
               return IconButton(
-                onPressed: () {
-                  context.read<LoginBloc>().add(DoLogOutEvent());
-                  context.go(AppRoutes.login);
-                },
-                icon: Icon(Icons.logout),
+                onPressed: () => context.go(AppRoutes.profile),
+                icon: Icon(Icons.child_care_outlined),
               );
             },
           ),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toastification/toastification.dart';
 import 'package:todo_withbloc/src/config/router/app_router.dart';
 import 'package:todo_withbloc/src/config/theme/app_themes.dart';
+import 'package:todo_withbloc/src/presentation/bloc/cswipe/cswipe_bloc.dart';
 import 'package:todo_withbloc/src/presentation/bloc/login/login_bloc.dart';
 import 'package:todo_withbloc/src/presentation/bloc/todo/todo_bloc.dart';
 import 'package:todo_withbloc/src/presentation/bloc/todo/todo_event.dart';
@@ -29,7 +30,7 @@ class MainApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) => LoginBloc()),
-
+          BlocProvider(create: (_) => CswipeBloc()),
           BlocProvider(create: (_) => TodoBloc(todoDao)..add(LoadTodos())),
         ],
         child: MaterialApp.router(
