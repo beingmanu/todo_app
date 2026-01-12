@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:todo_withbloc/src/presentation/bloc/todo/todo_state.dart';
+import 'package:todo_withbloc/src/config/theme/app_themes.dart';
 import '../../domain/model/todo_model.dart';
 import '../bloc/todo/todo_bloc.dart';
 import '../bloc/todo/todo_event.dart';
@@ -13,7 +13,6 @@ class TodoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine category color
     Color categoryColor;
     switch (todo.category.name.toLowerCase()) {
       case 'work':
@@ -44,154 +43,132 @@ class TodoWidget extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
-        child: IntrinsicHeight(
-          child: Row(
-            children: [
-              // Category Color Indicator Strip
-              Container(width: 6, color: categoryColor),
+        child: Dismissible(
+          direction: DismissDirection.endToStart,
+          background: Container(
+            color: Colors.red,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: const Icon(Icons.delete, color: Colors.white),
+          ),
+          onDismissed: (direction) =>
+              context.read<TodoBloc>().add(DeleteTodo(todo)),
 
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+          key: Key(todo.id.toString()),
+          child: IntrinsicHeight(
+            child: Row(
+              children: [
+                Container(width: 10, color: categoryColor),
+
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Category Badge
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: categoryColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              todo.category.name,
-                              style: TextStyle(
-                                color: categoryColor,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                todo.text,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: AppTheme.lightTheme.textTheme.bodyMedium!
+                                    .copyWith(
+                                      color: todo.status == TodoCompletion.done
+                                          ? Colors.grey
+                                          : Colors.black87,
+                                      decoration:
+                                          todo.status == TodoCompletion.done
+                                          ? TextDecoration.lineThrough
+                                          : TextDecoration.none,
+                                    ),
                               ),
-                            ),
-                          ),
-                          // Time Stamp
-                          Text(
-                            DateFormat('jm').format(
-                              DateTime.now(),
-                            ), // Replace with todo.updatedAt
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                              fontSize: 11,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
-                      // Todo Task Text
-                      Text(
-                        todo.text,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: todo.status == TodoCompletion.done
-                              ? Colors.grey
-                              : Colors.black87,
-                          decoration: todo.status == TodoCompletion.done
-                              ? TextDecoration.lineThrough
-                              : TextDecoration.none,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      // Action Buttons
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _ActionButton(
-                            icon: Icons.delete_outline,
-                            color: Colors.redAccent,
-                            onTap: () =>
-                                context.read<TodoBloc>().add(DeleteTodo(todo)),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 30,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: categoryColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.horizontal(
+                                right: Radius.circular(10),
+                              ),
+                            ),
+                            child: Text(
+                              todo.category.name,
+                              style: AppTheme.lightTheme.textTheme.bodySmall,
+                            ),
                           ),
-                          const SizedBox(width: 8),
-                          // Done/Undone Button
-                          BlocConsumer<TodoBloc, TodoState>(
-                            listener: (context, state) {},
-                            builder: (context, state) {
-                              return ElevatedButton.icon(
-                                onPressed: () => context.read<TodoBloc>().add(
-                                  UpdateTodo(
-                                    category: todo.category,
-                                    id: todo.id,
-                                    task: todo.text,
-                                    status: todo.status == TodoCompletion.done
-                                        ? TodoCompletion.incomplete
-                                        : TodoCompletion.done,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      todo.status == TodoCompletion.done
-                                      ? Colors.grey
-                                      : Colors.green,
-                                  foregroundColor: Colors.white,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                icon: Icon(
-                                  todo.status == TodoCompletion.done
-                                      ? Icons.undo
-                                      : Icons.check,
-                                  size: 18,
-                                ),
-                                label: Text(
-                                  todo.status == TodoCompletion.done
-                                      ? "Undone"
-                                      : "Done",
-                                ),
-                              );
-                            },
+                          Spacer(),
+                          Text(
+                            DateFormat('jm').format(DateTime.parse(todo.time)),
+                            style: AppTheme.lightTheme.textTheme.bodySmall,
+                          ),
+                          SizedBox(width: 10),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => context.read<TodoBloc>().add(
+                              UpdateTodo(
+                                category: todo.category,
+                                id: todo.id,
+                                task: todo.text,
+                                status: todo.status == TodoCompletion.done
+                                    ? TodoCompletion.incomplete
+                                    : TodoCompletion.done,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+
+                                transitionBuilder:
+                                    (
+                                      Widget child,
+                                      Animation<double> animation,
+                                    ) {
+                                      // You can use different transitions, like a scale transition
+                                      return ScaleTransition(
+                                        scale: animation,
+                                        child: child,
+                                      );
+                                    },
+                                child: todo.status == TodoCompletion.done
+                                    ? Icon(
+                                        Icons.check_circle,
+                                        color: Colors.green,
+                                        // The key is crucial for AnimatedSwitcher to identify the change
+                                        key: ValueKey<bool>(true),
+                                        size: 30,
+                                      )
+                                    : Icon(
+                                        Icons.circle_outlined,
+                                        color: Colors.grey,
+                                        size: 30,
+                                        // The key is crucial for AnimatedSwitcher to identify the change
+                                        key: ValueKey<bool>(false),
+                                      ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    );
-  }
-
-  void _showEditDialog(BuildContext context) {
-    // Logic to open a bottom sheet or dialog to edit todo.task
-  }
-}
-
-class _ActionButton extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _ActionButton({
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(icon, color: color, size: 22),
-      onPressed: onTap,
-      visualDensity: VisualDensity.compact,
     );
   }
 }

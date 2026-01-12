@@ -20,17 +20,23 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   _doLogin(DoLoginEvent event, Emitter<LoginState> emit) async {
-    emit(state.copyWith(isLoading: true));
-    await Future.delayed(Duration(seconds: 2));
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    var pin = prefs.getInt("pin") ?? 0;
-
-    if (pin == event.pin) {
-      emit(state.copyWith(isLoading: false, loginStatus: LoginStatus.loggedIn));
-      ToastService().success("Logged in");
+    if (event.pin == "") {
+      ToastService().error("Pin is required to login");
     } else {
-      emit(state.copyWith(isLoading: false));
-      ToastService().error("Pin is Incorrect");
+      emit(state.copyWith(isLoading: true));
+      await Future.delayed(Duration(seconds: 2));
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var pin = prefs.getString("pin") ?? 0;
+
+      if (pin == event.pin) {
+        emit(
+          state.copyWith(isLoading: false, loginStatus: LoginStatus.loggedIn),
+        );
+        ToastService().success("Logged in");
+      } else {
+        emit(state.copyWith(isLoading: false));
+        ToastService().error("Pin is Incorrect");
+      }
     }
   }
 
@@ -42,45 +48,54 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   _checkLogin(CheckLoginEvent event, Emitter<LoginState> emit) async {
-    emit(state.copyWith(isLoading: true));
+    if (!state.isSignup) {
+      emit(state.copyWith(isLoading: true));
 
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? username = prefs.getString("userName");
+      String? username = prefs.getString("userName");
 
-    if (username != null) {
-      int? userid = prefs.getInt("userid") ?? 0;
+      if (username != null) {
+        int? userid = prefs.getInt("userid") ?? 0;
 
-      var newUser = UserModel(userName: username, userId: userid);
-      emit(
-        state.copyWith(
-          userDetail: newUser,
-          loginStatus: LoginStatus.askingpin,
-          isLoading: false,
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          loginStatus: LoginStatus.loggedOut,
-          isLoading: false,
-          isSignup: true,
-        ),
-      );
+        var newUser = UserModel(userName: username, userId: userid);
+        emit(
+          state.copyWith(
+            userDetail: newUser,
+            loginStatus: LoginStatus.askingpin,
+            isLoading: false,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            loginStatus: LoginStatus.loggedOut,
+            isLoading: false,
+            isSignup: true,
+          ),
+        );
+      }
     }
   }
 
   _signup(DoSignUpEvent event, Emitter<LoginState> emit) async {
-    emit(state.copyWith(isLoading: true));
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (event.pin == "" || event.username == "") {
+      ToastService().error("These fields are cannot be empty");
+    } else if (event.pin.length < 4) {
+      ToastService().error("Minimum 4 digit pin is required");
+    } else {
+      emit(state.copyWith(isLoading: true));
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await Future.delayed(Duration(seconds: 2));
-    var random = Random();
-    prefs.setInt("userid", random.nextInt(600));
-    prefs.setString("userName", event.username);
-    prefs.setInt("pin", event.pin);
-    emit(state.copyWith(isLoading: false, loginStatus: LoginStatus.loggedIn));
-    ToastService().success("Signup successfully");
+      await Future.delayed(Duration(seconds: 2));
+      var random = Random();
+      prefs.setInt("userid", random.nextInt(600));
+      prefs.setString("userName", event.username);
+      prefs.setString("pin", event.pin);
+
+      emit(state.copyWith(isLoading: false, loginStatus: LoginStatus.loggedIn));
+      ToastService().success("Signup successfully");
+    }
   }
 
   _toggleSignup(ToggleSignupEvent event, Emitter<LoginState> emit) async {

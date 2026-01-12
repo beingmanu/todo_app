@@ -27,14 +27,19 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
     // 2. Add Todo
     on<AddTodo>((event, emit) async {
-      final newTodo = TodoData(
-        id: Random().nextInt(99999),
-        text: event.task,
-        category: state.category!,
-        status: TodoCompletion.incomplete,
-        time: DateTime.now().toIso8601String(),
-      );
-      await dao.insertTodo(newTodo);
+      try {
+        final newTodo = TodoData(
+          id: Random().nextInt(99999),
+          text: event.task,
+          category: state.category!,
+          status: TodoCompletion.incomplete,
+          time: DateTime.now().toIso8601String(),
+        );
+        await dao.insertTodo(newTodo);
+        ToastService().success("Task Saved!");
+      } catch (e) {
+        ToastService().error(e.toString());
+      }
     });
 
     // 3. Update Todo (Used for editing text OR toggling done)
@@ -48,6 +53,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
           time: DateTime.now().toIso8601String(),
         );
         await dao.updateTodo(newTodo);
+        ToastService().success("Task updated!");
       } catch (e) {
         ToastService().error(e.toString());
       }
@@ -60,6 +66,44 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
     on<CheckCategories>((event, emit) {
       emit(state.copyWith(category: event.cate));
+    });
+    on<UpdateFilter>((event, emit) {
+      if (event.isClear) {
+        emit(state.copyWith(selectedCategories: {}, selectedStatuses: {}));
+      } else {
+        final updatedCategories = Set<TodoCategories>.from(
+          state.selectedCategories,
+        );
+        final updatedStatuses = Set<TodoCompletion>.from(
+          state.selectedStatuses,
+        );
+
+        // 2. Handle Category Toggle
+        if (event.selectedCategories != null) {
+          if (updatedCategories.contains(event.selectedCategories)) {
+            updatedCategories.remove(event.selectedCategories);
+          } else {
+            updatedCategories.add(event.selectedCategories!);
+          }
+        }
+
+        // 3. Handle Status Toggle
+        if (event.selectedStatuses != null) {
+          if (updatedStatuses.contains(event.selectedStatuses)) {
+            updatedStatuses.remove(event.selectedStatuses);
+          } else {
+            updatedStatuses.add(event.selectedStatuses!);
+          }
+        }
+
+        // 4. Emit the new state with the new Set instances
+        emit(
+          state.copyWith(
+            selectedCategories: updatedCategories,
+            selectedStatuses: updatedStatuses,
+          ),
+        );
+      }
     });
   }
 

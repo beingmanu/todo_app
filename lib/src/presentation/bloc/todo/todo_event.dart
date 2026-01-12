@@ -60,3 +60,19 @@ class CheckCategories extends TodoEvent {
   @override
   List<Object?> get props => [cate];
 }
+
+class UpdateFilter extends TodoEvent {
+  final TodoCategories? selectedCategories;
+  final TodoCompletion? selectedStatuses;
+  final bool isClear;
+  UpdateFilter({
+    this.selectedCategories,
+    this.selectedStatuses,
+    this.isClear = false,
+  });
+
+  @override
+  List<Object?> get props => [selectedCategories, selectedStatuses, isClear];
+}
+
+// SetWorkIncompleteFilter();
