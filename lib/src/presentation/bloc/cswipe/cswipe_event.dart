@@ -16,15 +16,17 @@ class LoadCardsEvent extends CswipeEvent {
 
 class LikeCardEvent extends CswipeEvent {
   final CardModel card;
-  const LikeCardEvent(this.card);
+  final bool isUndo;
+  const LikeCardEvent(this.card, {this.isUndo = false});
 
   @override
-  List<Object> get props => [card];
+  List<Object> get props => [card, isUndo];
 }
 
 class RejectCardEvent extends CswipeEvent {
   final CardModel card;
-  const RejectCardEvent(this.card);
+  final bool isUndo;
+  const RejectCardEvent(this.card, {this.isUndo = false});
 
   @override
   List<Object> get props => [card];
@@ -32,16 +34,17 @@ class RejectCardEvent extends CswipeEvent {
 
 class SaveCardEvent extends CswipeEvent {
   final CardModel card;
-  const SaveCardEvent(this.card);
+  final bool isUndo;
+  const SaveCardEvent(this.card, {this.isUndo = false});
 
   @override
   List<Object> get props => [card];
 }
 
-class SwipeDownEvent extends CswipeEvent {
-  final CardModel card;
-  const SwipeDownEvent(this.card);
+class UpdateSwipeEnd extends CswipeEvent {
+  final bool isSwipeEnd;
+  const UpdateSwipeEnd(this.isSwipeEnd);
 
   @override
-  List<Object> get props => [card];
+  List<Object> get props => [isSwipeEnd];
 }

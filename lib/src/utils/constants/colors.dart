@@ -6,7 +6,8 @@ class BasicColors {
   static Color k600 = const Color(0xFF98b5ff);
   static Color k100 = const Color(0xFFfcfbfd);
 
-  static Color p100 = const Color(0xFFdb11ee);
+  static Color p100 = const Color.fromARGB(149, 252, 206, 255);
+  static Color p800 = const Color(0xFFdb11ee);
 }
 
 class PrimaryColors {
