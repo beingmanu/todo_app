@@ -6,12 +6,14 @@ class CswipeState extends Equatable {
   final List<CardModel> rejectedCards;
   final List<CardModel> savedCards;
   final bool isLoading;
+  final bool isSwipeEnds;
   const CswipeState({
     required this.cards,
     required this.rejectedCards,
     required this.likedCards,
     required this.savedCards,
     required this.isLoading,
+    required this.isSwipeEnds,
   });
 
   @override
@@ -21,6 +23,7 @@ class CswipeState extends Equatable {
     rejectedCards,
     savedCards,
     isLoading,
+    isSwipeEnds,
   ];
 
   const CswipeState.initial()
@@ -30,6 +33,7 @@ class CswipeState extends Equatable {
         likedCards: const [],
         savedCards: const [],
         isLoading: true,
+        isSwipeEnds: false,
       );
 
   CswipeState copyWith({
@@ -39,11 +43,13 @@ class CswipeState extends Equatable {
     List<CardModel>? savedCards,
     int? currentIndex,
     bool? isLoading,
+    bool? isSwipeEnds,
   }) => CswipeState(
     cards: cards ?? this.cards,
-    rejectedCards: likedCards ?? this.rejectedCards,
-    likedCards: rejectedCards ?? this.likedCards,
+    rejectedCards: rejectedCards ?? this.rejectedCards,
+    likedCards: likedCards ?? this.likedCards,
     savedCards: savedCards ?? this.savedCards,
     isLoading: isLoading ?? this.isLoading,
+    isSwipeEnds: isSwipeEnds ?? this.isSwipeEnds,
   );
 }

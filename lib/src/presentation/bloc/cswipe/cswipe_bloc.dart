@@ -32,7 +32,12 @@ class CswipeBloc extends Bloc<CswipeEvent, CswipeState> {
     });
 
     on<SaveCardEvent>((event, emit) {
-      if (state.savedCards.contains(event.card)) {
+      if (event.isUndo) {
+        final updatedList = state.savedCards
+            .where((c) => c != event.card)
+            .toList();
+        emit(state.copyWith(savedCards: updatedList));
+      } else if (state.savedCards.contains(event.card)) {
         ToastService().error("Already Saved");
       } else {
         emit(state.copyWith(savedCards: [...state.savedCards, event.card]));
@@ -40,7 +45,12 @@ class CswipeBloc extends Bloc<CswipeEvent, CswipeState> {
       }
     });
     on<LikeCardEvent>((event, emit) {
-      if (state.likedCards.contains(event.card)) {
+      if (event.isUndo) {
+        final updatedList = state.likedCards
+            .where((card) => card != event.card)
+            .toList();
+        emit(state.copyWith(likedCards: updatedList));
+      } else if (state.likedCards.contains(event.card)) {
         ToastService().error("Already Liked");
       } else {
         emit(state.copyWith(likedCards: [...state.likedCards, event.card]));
@@ -48,7 +58,12 @@ class CswipeBloc extends Bloc<CswipeEvent, CswipeState> {
       }
     });
     on<RejectCardEvent>((event, emit) {
-      if (state.rejectedCards.contains(event.card)) {
+      if (event.isUndo) {
+        final updatedList = state.rejectedCards
+            .where((card) => card != event.card)
+            .toList();
+        emit(state.copyWith(rejectedCards: updatedList));
+      } else if (state.rejectedCards.contains(event.card)) {
         ToastService().error("Already Rejected");
       } else {
         emit(
@@ -57,8 +72,9 @@ class CswipeBloc extends Bloc<CswipeEvent, CswipeState> {
         ToastService().success("Rejected");
       }
     });
-    on<SwipeDownEvent>((event, emit) {
-      ToastService().success("Nothing");
-    });
+
+    on<UpdateSwipeEnd>(
+      (event, emit) => emit(state.copyWith(isSwipeEnds: event.isSwipeEnd)),
+    );
   }
 }

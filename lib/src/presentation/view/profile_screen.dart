@@ -22,102 +22,78 @@ class ProfileScreen extends HookWidget {
       child: Scaffold(
         backgroundColor: PrimaryColors.k100,
         appBar: AppBar(toolbarHeight: 0),
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            OceanWaveWidget(),
-            Container(
-              height: size.height * .8,
-              width: size.width,
-              alignment: Alignment.center,
-            ).blurred(
-              blur: 20,
-              blurColor: PrimaryColors.k100,
-              colorOpacity: 0.1,
-              // alignment: Alignment.bottomCenter,
-              // overlay: Card(child: Text("data")),
-            ),
-            SingleChildScrollView(
-              child: Column(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(
                 children: [
-                  Stack(
-                    children: [
-                      Container(
-                        height: size.width * .22,
-                        width: size.width,
-                        color: PrimaryColors.kDefault,
-                        alignment: Alignment.bottomLeft,
-                        padding: EdgeInsets.only(left: (size.width * .2) + 30),
-                        child: Text(
-                          context
-                                  .read<LoginBloc>()
-                                  .state
-                                  .userDetail
-                                  ?.userName ??
-                              "",
-                          style: AppTheme.darkTheme.textTheme.displaySmall,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: size.width * .09,
-                          left: 15,
-                        ),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white, // Border color
-                            width: 4.0, // Border width
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 5.0,
-                            ),
-                          ],
-                        ),
-                        child: CircleAvatar(
-                          radius: size.width * .1,
-                          backgroundColor: PrimaryColors.k800,
-                          child: Icon(Icons.person),
-                        ),
-                      ),
-                      // OceanWaveWidget(),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "More Features",
-                          style: AppTheme.lightTheme.textTheme.displaySmall,
-                        ),
-
-                        FeaturesWidget(
-                          "Card Swipe",
-                          () => context.go(AppRoutes.cSwipe),
-                          icon: Icons.copy,
-                        ),
-
-                        Text(
-                          "Profile Options",
-                          style: AppTheme.lightTheme.textTheme.displaySmall,
-                        ),
-
-                        FeaturesWidget("Log out", () {
-                          context.read<LoginBloc>().add(DoLogOutEvent());
-                          context.go(AppRoutes.login);
-                        }, icon: Icons.logout),
-                      ],
+                  Container(
+                    height: size.width * .22,
+                    width: size.width,
+                    color: PrimaryColors.kDefault,
+                    alignment: Alignment.bottomLeft,
+                    padding: EdgeInsets.only(left: (size.width * .2) + 30),
+                    child: Text(
+                      context.read<LoginBloc>().state.userDetail?.userName ??
+                          "",
+                      style: AppTheme.darkTheme.textTheme.displaySmall,
                     ),
                   ),
+                  Container(
+                    margin: EdgeInsets.only(top: size.width * .09, left: 15),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white, // Border color
+                        width: 4.0, // Border width
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 5.0,
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      radius: size.width * .1,
+                      backgroundColor: PrimaryColors.k800,
+                      child: Icon(Icons.person),
+                    ),
+                  ),
+                  // OceanWaveWidget(),
                 ],
               ),
-            ),
-          ],
+              SizedBox(height: 20),
+              Padding(
+                padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "More Features",
+                      style: AppTheme.lightTheme.textTheme.displaySmall,
+                    ),
+
+                    FeaturesWidget(
+                      "Card Swipe",
+                      () => context.go(AppRoutes.cSwipe),
+                      icon: Icons.copy,
+                    ),
+
+                    Text(
+                      "Profile Options",
+                      style: AppTheme.lightTheme.textTheme.displaySmall,
+                    ),
+
+                    FeaturesWidget("Log out", () {
+                      context.read<LoginBloc>().add(DoLogOutEvent());
+                      context.go(AppRoutes.login);
+                    }, icon: Icons.logout),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
