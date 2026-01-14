@@ -14,22 +14,32 @@ class LoginScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final size = MediaQuery.of(context).size;
     final TextEditingController usernameController = useTextEditingController();
     final TextEditingController pinController = useTextEditingController();
     final bloc = context.read<LoginBloc>();
-    useEffect(() {
-      bloc.add(CheckLoginEvent());
 
-      final subscription = bloc.stream.listen((state) {
-        if (!bloc.state.isSignup &&
-            state.loginStatus == LoginStatus.askingpin &&
-            state.userDetail != null) {
-          usernameController.text = state.userDetail!.userName;
-        }
-      });
-      return subscription.cancel;
-    }, [bloc.state.loginStatus]);
+    useEffect(
+      () {
+        bloc.add(CheckLoginEvent());
+
+        final subscription = bloc.stream.listen((state) {
+          if (!bloc.state.isSignup &&
+              state.loginStatus == LoginStatus.askingpin &&
+              state.userDetail != null) {
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              context.go(AppRoutes.home);
+              usernameController.text = state.userDetail!.userName;
+            });
+          }
+        });
+        return subscription.cancel;
+      },
+      [
+        bloc.state.loginStatus,
+        bloc.state.canCheckBiometrics,
+        bloc.state.availableBiometrics,
+      ],
+    );
 
     return Scaffold(
       extendBody: true,

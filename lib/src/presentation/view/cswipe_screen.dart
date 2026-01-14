@@ -9,7 +9,6 @@ import 'package:lottie/lottie.dart';
 import 'package:todo_withbloc/src/config/router/routes.dart';
 import 'package:todo_withbloc/src/presentation/bloc/cswipe/cswipe_bloc.dart';
 import 'package:todo_withbloc/src/presentation/widgets/cswipe_widget.dart';
-import 'package:todo_withbloc/src/utils/toast_util.dart';
 
 import '../../config/theme/app_themes.dart';
 import '../../utils/constants/colors.dart';
@@ -40,6 +39,73 @@ class CardSwipeScreen extends HookWidget {
           ),
           toolbarHeight: 80,
           backgroundColor: Colors.transparent,
+          actions: [
+            IconButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) => BlocConsumer<CswipeBloc, CswipeState>(
+                    listener: (context, state) {},
+                    builder: (context, state) {
+                      return Center(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Liked...",
+
+                                style:
+                                    AppTheme.lightTheme.textTheme.displayMedium,
+                              ),
+                            ),
+                            ...List.generate(
+                              state.likedCards.length,
+                              (index) => Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Text(state.likedCards[index].title),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Rejected...",
+                                style:
+                                    AppTheme.lightTheme.textTheme.displayMedium,
+                              ),
+                            ),
+                            ...List.generate(
+                              state.rejectedCards.length,
+                              (index) => Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Text(state.rejectedCards[index].title),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Saved...",
+                                style:
+                                    AppTheme.lightTheme.textTheme.displayMedium,
+                              ),
+                            ),
+                            ...List.generate(
+                              state.savedCards.length,
+                              (index) => Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Text(state.savedCards[index].title),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+              icon: Icon(Icons.menu),
+            ),
+          ],
         ),
         body: BlocConsumer<CswipeBloc, CswipeState>(
           listener: (context, state) {},
@@ -90,9 +156,6 @@ class CardSwipeScreen extends HookWidget {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  "total: ${state.cards.length}   liked: ${state.likedCards.length}    \nrejected: ${state.rejectedCards.length}     saved:${state.savedCards.length}",
-                                ),
                                 SizedBox(
                                   height: size.height * .7,
                                   width: size.width,
@@ -125,9 +188,6 @@ class CardSwipeScreen extends HookWidget {
                                           currentIndex,
                                           direction,
                                         ) {
-                                          print(
-                                            "======$previousIndex====$currentIndex====${direction.name}",
-                                          );
                                           switch (direction) {
                                             case CardSwiperDirection.left:
                                               context.read<CswipeBloc>().add(
@@ -162,12 +222,12 @@ class CardSwipeScreen extends HookWidget {
 
                                             default:
                                           }
-                                          // if ((state.cards.length - 1) ==
-                                          //     previousIndex) {
-                                          //   context.read<CswipeBloc>().add(
-                                          //     UpdateSwipeEnd(false),
-                                          //   );
-                                          // }
+                                          if ((state.cards.length - 1) ==
+                                              previousIndex) {
+                                            context.read<CswipeBloc>().add(
+                                              UpdateSwipeEnd(false),
+                                            );
+                                          }
                                           return true;
                                         },
 
@@ -183,7 +243,7 @@ class CardSwipeScreen extends HookWidget {
                                                 RejectCardEvent(
                                                   bloc
                                                       .state
-                                                      .cards[currentIndex ?? 0],
+                                                      .cards[previousIndex],
                                                 ),
                                               );
                                               break;
@@ -192,7 +252,7 @@ class CardSwipeScreen extends HookWidget {
                                                 LikeCardEvent(
                                                   bloc
                                                       .state
-                                                      .cards[currentIndex ?? 0],
+                                                      .cards[previousIndex],
                                                 ),
                                               );
                                               break;
@@ -201,7 +261,7 @@ class CardSwipeScreen extends HookWidget {
                                                 SaveCardEvent(
                                                   bloc
                                                       .state
-                                                      .cards[currentIndex ?? 0],
+                                                      .cards[previousIndex],
                                                 ),
                                               );
                                               break;

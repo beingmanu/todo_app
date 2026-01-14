@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:toastification/toastification.dart';
 import 'package:todo_withbloc/src/config/router/app_router.dart';
 import 'package:todo_withbloc/src/config/theme/app_themes.dart';
@@ -20,10 +22,15 @@ void main() async {
   runApp(MainApp(todoDao: database.todoDao));
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   final TodoDao todoDao;
   const MainApp({super.key, required this.todoDao});
 
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return ToastificationWrapper(
@@ -31,7 +38,9 @@ class MainApp extends StatelessWidget {
         providers: [
           BlocProvider(create: (_) => LoginBloc()),
           BlocProvider(create: (_) => CswipeBloc()),
-          BlocProvider(create: (_) => TodoBloc(todoDao)..add(LoadTodos())),
+          BlocProvider(
+            create: (_) => TodoBloc(widget.todoDao)..add(LoadTodos()),
+          ),
         ],
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,

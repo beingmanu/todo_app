@@ -19,14 +19,10 @@ class OceanWaveWidget extends StatelessWidget {
           color: Colors.amber,
           child: AnimatedMeshGradient(
             colors: [
-              // PrimaryColors.k700,
-              // PrimaryColors.k700,
-              // PrimaryColors.k600,
-              // PrimaryColors.k600,
-              const Color.fromARGB(255, 157, 146, 237),
-              const Color(0xFF7166C3),
-              const Color.fromARGB(255, 172, 128, 234),
-              const Color.fromARGB(255, 140, 129, 227),
+              MeshGradientColors.k1,
+              MeshGradientColors.k2,
+              MeshGradientColors.k3,
+              MeshGradientColors.k4,
             ],
             options: AnimatedMeshGradientOptions(
               speed: 0.01,
@@ -44,7 +40,6 @@ class OceanWaveWidget extends StatelessWidget {
 class UPathClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    final double yOffset = 100;
     final path = Path();
 
     // The U-shape logic provided in your previous custom paint
@@ -53,7 +48,13 @@ class UPathClipper extends CustomClipper<Path> {
     path.lineTo(size.width, 40);
 
     // Conic curve to create the fluid "U" pocket
-    path.conicTo((size.width / 1.8), yOffset * 4, 0, size.height * 0.25, 0.8);
+    path.conicTo(
+      (size.width / 1.8),
+      size.width * .9,
+      0,
+      size.width * 0.45,
+      0.8,
+    );
 
     path.lineTo(0, 0);
     path.close();

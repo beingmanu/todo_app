@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+class MeshGradientColors {
+  static Color k1 = const Color(0xFF8569DF);
+  static Color k2 = const Color(0xFFD19AEB);
+  static Color k3 = const Color(0xFFA76BEF);
+  static Color k4 = const Color(0xFFC48AEC);
+}
+
 class BasicColors {
   static Color k900 = const Color(0xFF031956);
   static Color k800 = const Color(0xFF344fa1);

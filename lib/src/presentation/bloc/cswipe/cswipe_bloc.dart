@@ -34,7 +34,7 @@ class CswipeBloc extends Bloc<CswipeEvent, CswipeState> {
     on<SaveCardEvent>((event, emit) {
       if (event.isUndo) {
         final updatedList = state.savedCards
-            .where((c) => c != event.card)
+            .where((card) => card.title != event.card.title)
             .toList();
         emit(state.copyWith(savedCards: updatedList));
       } else if (state.savedCards.contains(event.card)) {
@@ -47,8 +47,9 @@ class CswipeBloc extends Bloc<CswipeEvent, CswipeState> {
     on<LikeCardEvent>((event, emit) {
       if (event.isUndo) {
         final updatedList = state.likedCards
-            .where((card) => card != event.card)
+            .where((card) => card.title != event.card.title)
             .toList();
+
         emit(state.copyWith(likedCards: updatedList));
       } else if (state.likedCards.contains(event.card)) {
         ToastService().error("Already Liked");
@@ -60,7 +61,7 @@ class CswipeBloc extends Bloc<CswipeEvent, CswipeState> {
     on<RejectCardEvent>((event, emit) {
       if (event.isUndo) {
         final updatedList = state.rejectedCards
-            .where((card) => card != event.card)
+            .where((card) => card.title != event.card.title)
             .toList();
         emit(state.copyWith(rejectedCards: updatedList));
       } else if (state.rejectedCards.contains(event.card)) {
