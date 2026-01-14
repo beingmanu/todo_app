@@ -59,6 +59,7 @@ class ToDoScreen extends HookWidget {
             "New Tasks",
             style: AppTheme.darkTheme.textTheme.displayLarge,
           ),
+          automaticallyImplyLeading: true,
         ),
 
         bottomNavigationBar: BlocConsumer<TodoBloc, TodoState>(

@@ -1,4 +1,3 @@
-import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -8,7 +7,6 @@ import 'package:todo_withbloc/src/config/theme/app_themes.dart';
 import 'package:todo_withbloc/src/presentation/bloc/login/login_bloc.dart';
 
 import '../../utils/constants/colors.dart';
-import '../widgets/gradient_widget.dart';
 
 class ProfileScreen extends HookWidget {
   const ProfileScreen({super.key});
@@ -43,10 +41,7 @@ class ProfileScreen extends HookWidget {
                     margin: EdgeInsets.only(top: size.width * .09, left: 15),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white, // Border color
-                        width: 4.0, // Border width
-                      ),
+                      border: Border.all(color: Colors.white, width: 4.0),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2),
@@ -60,7 +55,6 @@ class ProfileScreen extends HookWidget {
                       child: Icon(Icons.person),
                     ),
                   ),
-                  // OceanWaveWidget(),
                 ],
               ),
               SizedBox(height: 20),

@@ -39,3 +39,33 @@ class ToggleSignupEvent extends LoginEvent {
   @override
   List<Object?> get props => [];
 }
+
+class CheckBioMetrixEvent extends LoginEvent {
+  const CheckBioMetrixEvent();
+  @override
+  List<Object?> get props => [];
+}
+
+class GetAvailableBioEvent extends LoginEvent {
+  const GetAvailableBioEvent();
+  @override
+  List<Object?> get props => [];
+}
+
+class GetAuthBioEvent extends LoginEvent {
+  const GetAuthBioEvent();
+  @override
+  List<Object?> get props => [];
+}
+
+class GetAuthOsEvent extends LoginEvent {
+  const GetAuthOsEvent();
+  @override
+  List<Object?> get props => [];
+}
+
+class CancelAuthBioEvent extends LoginEvent {
+  const CancelAuthBioEvent();
+  @override
+  List<Object?> get props => [];
+}

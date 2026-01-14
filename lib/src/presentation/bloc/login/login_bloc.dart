@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_withbloc/src/utils/toast_util.dart';
 
@@ -17,8 +19,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<CheckLoginEvent>(_checkLogin);
     on<DoSignUpEvent>(_signup);
     on<ToggleSignupEvent>(_toggleSignup);
+    on<GetAuthBioEvent>(_authenticateWithBiometrics);
+    on<CheckBioMetrixEvent>(_checkBiometrics);
+    on<GetAvailableBioEvent>(_getAvailableBiometrics);
+    on<GetAuthOsEvent>(_authenticate);
+    on<CancelAuthBioEvent>(_cancelAuthentication);
   }
-
+  final LocalAuthentication auth = LocalAuthentication();
   _doLogin(DoLoginEvent event, Emitter<LoginState> emit) async {
     if (event.pin == "") {
       ToastService().error("Pin is required to login");
@@ -66,6 +73,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             isLoading: false,
           ),
         );
+        add(GetAuthBioEvent());
       } else {
         emit(
           state.copyWith(
@@ -100,5 +108,152 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   _toggleSignup(ToggleSignupEvent event, Emitter<LoginState> emit) async {
     emit(state.copyWith(isSignup: !state.isSignup));
+  }
+
+  _checkBiometrics(CheckBioMetrixEvent event, Emitter<LoginState> emit) async {
+    late bool canCheckBiometrics;
+    try {
+      canCheckBiometrics = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      canCheckBiometrics = false;
+      ToastService().error(e.toString());
+    }
+    emit(state.copyWith(canCheckBiometrics: canCheckBiometrics));
+  }
+
+  _getAvailableBiometrics(
+    GetAvailableBioEvent event,
+    Emitter<LoginState> emit,
+  ) async {
+    late List<BiometricType> availableBiometrics;
+    try {
+      availableBiometrics = await auth.getAvailableBiometrics();
+    } on PlatformException catch (e) {
+      availableBiometrics = <BiometricType>[];
+      ToastService().error(e.toString());
+    }
+    emit(state.copyWith(availableBiometrics: availableBiometrics));
+  }
+
+  _authenticate(GetAuthOsEvent event, Emitter<LoginState> emit) async {
+    bool authenticated = false;
+    try {
+      emit(
+        state.copyWith(isAuthenticating: true, authorized: 'Authenticating'),
+      );
+
+      authenticated = await auth.authenticate(
+        localizedReason: 'Let OS determine authentication method',
+        persistAcrossBackgrounding: true,
+      );
+      emit(state.copyWith(isAuthenticating: false));
+    } on LocalAuthException catch (e) {
+      ToastService().error(e.toString());
+      emit(
+        state.copyWith(
+          isAuthenticating: false,
+          authorized:
+              e.code != LocalAuthExceptionCode.userCanceled &&
+                  e.code != LocalAuthExceptionCode.systemCanceled
+              ? 'Error - ${e.code.name}${e.description != null ? ': ${e.description}' : ''}'
+              : null,
+        ),
+      );
+
+      return;
+    } on PlatformException catch (e) {
+      print(e);
+
+      emit(
+        state.copyWith(
+          isAuthenticating: false,
+          authorized: 'Unexpected error - ${e.message}',
+        ),
+      );
+
+      return;
+    }
+    emit(
+      state.copyWith(
+        authorized: authenticated ? 'Authorized' : 'Not Authorized',
+      ),
+    );
+  }
+
+  _authenticateWithBiometrics(
+    GetAuthBioEvent event,
+    Emitter<LoginState> emit,
+  ) async {
+    late bool canCheckBiometrics;
+    try {
+      canCheckBiometrics = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      canCheckBiometrics = false;
+      ToastService().error(e.toString());
+    }
+    emit(state.copyWith(canCheckBiometrics: canCheckBiometrics));
+    late List<BiometricType> availableBiometrics;
+    try {
+      availableBiometrics = await auth.getAvailableBiometrics();
+    } on PlatformException catch (e) {
+      availableBiometrics = <BiometricType>[];
+      ToastService().error(e.toString());
+    }
+    emit(state.copyWith(availableBiometrics: availableBiometrics));
+    bool authenticated = false;
+    try {
+      emit(
+        state.copyWith(isAuthenticating: true, authorized: 'Authenticating'),
+      );
+      authenticated = await auth.authenticate(
+        localizedReason:
+            'Scan your fingerprint (or face or whatever) to authenticate',
+        persistAcrossBackgrounding: true,
+        biometricOnly: true,
+      );
+      emit(
+        state.copyWith(isAuthenticating: false, authorized: 'Authenticating'),
+      );
+    } on LocalAuthException catch (e) {
+      print(e);
+      emit(
+        state.copyWith(
+          isAuthenticating: false,
+          authorized:
+              e.code != LocalAuthExceptionCode.userCanceled &&
+                  e.code != LocalAuthExceptionCode.systemCanceled
+              ? 'Error - ${e.code.name}${e.description != null ? ': ${e.description}' : ''}'
+              : null,
+        ),
+      );
+      // if (e.code == LocalAuthExceptionCode.userCanceled ||
+      //     e.code == LocalAuthExceptionCode.systemCanceled) {
+      //   await SystemNavigator.pop();
+      //   return;
+      // }
+      // return;
+    } on PlatformException catch (e) {
+      print(e);
+
+      emit(
+        state.copyWith(
+          isAuthenticating: false,
+          authorized: 'Unexpected Error - ${e.message}',
+        ),
+      );
+      await SystemNavigator.pop();
+      // return;
+    }
+
+    final String message = authenticated ? 'Authorized' : 'Not Authorized';
+    emit(state.copyWith(authorized: message));
+  }
+
+  _cancelAuthentication(
+    CancelAuthBioEvent event,
+    Emitter<LoginState> emit,
+  ) async {
+    await auth.stopAuthentication();
+    emit(state.copyWith(isAuthenticating: false));
   }
 }
