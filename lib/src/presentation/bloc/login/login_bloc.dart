@@ -73,7 +73,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             isLoading: false,
           ),
         );
-        add(GetAuthBioEvent());
+        // add(GetAuthBioEvent());
       } else {
         emit(
           state.copyWith(
