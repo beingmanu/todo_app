@@ -273,56 +273,97 @@ class CardSwipeScreen extends HookWidget {
                                   ),
                                 ),
 
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    //Undo
-                                    FloatingActionButton(
-                                      backgroundColor: PrimaryColors.kDefault,
-                                      shape: CircleBorder(),
-                                      onPressed: () => swipeController.undo(),
-                                      heroTag: "undo",
-                                      child: Icon(Icons.undo),
-                                    ),
-                                    // Like
-                                    FloatingActionButton(
-                                      backgroundColor: PrimaryColors.kDefault,
-                                      shape: CircleBorder(),
-                                      onPressed: () => swipeController.swipe(
-                                        CardSwiperDirection.right,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 50,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      //Undo
+                                      SwipeOptionWidget(
+                                        icon: Icons.undo,
+                                        iconColor: PrimaryColors.kDefault,
+                                        isSmall: true,
+                                        onTap: () => swipeController.undo(),
                                       ),
-                                      heroTag: "like",
-                                      child: Icon(Icons.heart_broken),
-                                    ),
-                                    // reject
-                                    FloatingActionButton(
-                                      backgroundColor: PrimaryColors.kDefault,
-                                      shape: CircleBorder(),
-                                      heroTag: "reject",
-                                      onPressed: () => swipeController.swipe(
-                                        CardSwiperDirection.left,
-                                      ),
-                                      child: Icon(Icons.cancel),
-                                    ),
 
-                                    // save
-                                    FloatingActionButton(
-                                      backgroundColor: PrimaryColors.kDefault,
-                                      shape: CircleBorder(),
-                                      heroTag: "save",
-                                      onPressed: () => swipeController.swipe(
-                                        CardSwiperDirection.top,
+                                      // reject
+                                      SwipeOptionWidget(
+                                        icon: Icons.cancel_outlined,
+                                        iconColor: Colors.red,
+
+                                        onTap: () => swipeController.swipe(
+                                          CardSwiperDirection.left,
+                                        ),
                                       ),
-                                      child: Icon(Icons.save),
-                                    ),
-                                  ],
+
+                                      // Like
+                                      SwipeOptionWidget(
+                                        icon: Icons.heart_broken,
+                                        iconColor: Colors.green,
+
+                                        onTap: () => swipeController.swipe(
+                                          CardSwiperDirection.right,
+                                        ),
+                                      ),
+
+                                      // save
+                                      SwipeOptionWidget(
+                                        icon: Icons.save,
+                                        iconColor: PrimaryColors.kDefault,
+                                        isSmall: true,
+                                        onTap: () => swipeController.swipe(
+                                          CardSwiperDirection.top,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
                     ],
                   );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class SwipeOptionWidget extends HookWidget {
+  final bool isSmall;
+  final Color? iconColor;
+  final void Function()? onTap;
+  final IconData? icon;
+  const SwipeOptionWidget({
+    super.key,
+    this.isSmall = false,
+    this.iconColor,
+    this.onTap,
+    this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        height: isSmall ? 50 : 60,
+        width: isSmall ? 50 : 60,
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0),
+            ],
+          ),
+          child: Icon(
+            icon ?? Icons.block,
+            color: iconColor ?? PrimaryColors.kDefault,
+          ),
         ),
       ),
     );

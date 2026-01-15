@@ -80,7 +80,6 @@ class AudioPlayerScreen extends HookWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(state.audioStatus.name),
                           Text(
                             "Instagram Trends",
                             style: AppTheme.lightTheme.textTheme.displaySmall!
