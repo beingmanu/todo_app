@@ -1,0 +1,65 @@
+[
+    {
+        "id": "01",
+        "audioUrl": "assets/audios/maharani.mp3",
+        "title": "Maharani",
+        "singer": "Arpit Bala",
+        "imageUrl": ""
+    },
+    {
+        "id": "02",
+        "audioUrl": "assets/audios/terehoke.mp3",
+        "title": "Tere Hoke",
+        "singer": "King & Bella",
+        "imageUrl": ""
+    },
+    {
+        "id": "03",
+        "audioUrl": "assets/audios/maharani.mp3",
+        "title": "Maharani",
+        "singer": "Arpit Bala",
+        "imageUrl": ""
+    },
+    {
+        "id": "04",
+        "audioUrl": "https://codeskulptor-demos.commondatastorage.googleapis.com/descent/background%20music.mp3",
+        "title": "Tone 01",
+        "singer": "Unknown",
+        "imageUrl": ""
+    },
+    {
+        "id": "05",
+        "audioUrl": "assets/audios/maharani.mp3",
+        "title": "Maharani",
+        "singer": "Arpit Bala",
+        "imageUrl": ""
+    },
+    {
+        "id": "06",
+        "audioUrl": "assets/audios/maharani.mp3",
+        "title": "Maharani",
+        "singer": "Arpit Bala",
+        "imageUrl": ""
+    },
+    {
+        "id": "07",
+        "audioUrl": "assets/audios/terehoke.mp3",
+        "title": "Tere Hoke",
+        "singer": "King & Bella",
+        "imageUrl": ""
+    },
+    {
+        "id": "08",
+        "audioUrl": "assets/audios/terehoke.mp3",
+        "title": "Tere Hoke",
+        "singer": "King & Bella",
+        "imageUrl": ""
+    },
+    {
+        "id": "09",
+        "audioUrl": "assets/audios/terehoke.mp3",
+        "title": "Tere Hoke",
+        "singer": "King & Bella",
+        "imageUrl": ""
+    }
+]

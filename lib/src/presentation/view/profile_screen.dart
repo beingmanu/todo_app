@@ -73,7 +73,9 @@ class ProfileScreen extends HookWidget {
                       () => context.go(AppRoutes.cSwipe),
                       icon: Icons.copy,
                     ),
-
+                    FeaturesWidget("Trending Audios", () {
+                      context.go(AppRoutes.aPlayer);
+                    }, icon: Icons.music_note),
                     Text(
                       "Profile Options",
                       style: AppTheme.lightTheme.textTheme.displaySmall,
