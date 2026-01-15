@@ -4,4 +4,5 @@ class AppRoutes {
   static String todo = "/todo/:id";
   static String profile = "/profile";
   static String cSwipe = "/cSwipe";
+  static String aPlayer = "/aPlayer";
 }

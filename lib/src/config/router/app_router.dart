@@ -7,6 +7,8 @@ import 'package:todo_withbloc/src/presentation/view/login_screen.dart';
 import 'package:todo_withbloc/src/presentation/view/profile_screen.dart';
 import 'package:todo_withbloc/src/presentation/view/todo_screen.dart';
 
+import '../../presentation/view/audio_player_screen.dart';
+
 final router = GoRouter(
   navigatorKey: navigatorKey,
   initialLocation: AppRoutes.login,
@@ -21,11 +23,14 @@ final router = GoRouter(
       path: AppRoutes.cSwipe,
       builder: (context, state) => CardSwipeScreen(),
     ),
-
     GoRoute(
       path: AppRoutes.todo,
       builder: (context, state) =>
           ToDoScreen(existingTodo: state.pathParameters['id']),
+    ),
+    GoRoute(
+      path: AppRoutes.aPlayer,
+      builder: (context, state) => AudioPlayerScreen(),
     ),
   ],
 );

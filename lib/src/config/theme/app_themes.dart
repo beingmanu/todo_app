@@ -38,7 +38,7 @@ abstract class AppTheme {
     );
   }
 
-  static String fontFamily = "sfPro";
+  static String fontFamily = "Montserrat";
 
   // Light Theme Components
   static AppBarTheme get _lightAppBarTheme => AppBarTheme(
